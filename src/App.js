@@ -5,7 +5,6 @@ import LoanContract from './contracts/LoanContract.json';
 import Login from './components/Login';
 import CreateLoanForm from './components/CreateLoanForm';
 import SendEtherForm from './components/SendEtherForm';
-import './index.css'
 
 function App() {
   const [web3, setWeb3] = useState(null);
