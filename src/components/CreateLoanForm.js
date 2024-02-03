@@ -11,7 +11,7 @@ const CreateLoanForm = ({ onCreateLoan }) => {
   };
 
   return (
-    <div>
+    <div className="box">
       <h2>Create Loan</h2>
       <div>
         <label>Loan Amount:</label>

@@ -1,6 +1,12 @@
 /* styles.css */
-.App {
+
+body {
   font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
   text-align: center;
   margin: 20px;
 }
@@ -10,8 +16,6 @@ h1 {
 }
 
 button {
-  background-color: #4caf50;
-  color: white;
   padding: 10px 20px;
   margin: 5px;
   font-size: 16px;
@@ -20,15 +24,43 @@ button {
   border-radius: 4px;
 }
 
+button.login {
+  background-color: #4caf50;
+  color: white;
+}
+
+button.logout {
+  background-color: #ff3b3b;
+  color: white;
+}
+
 button:hover {
   background-color: #45a049;
 }
 
-form {
+.top-right {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.box-container {
   display: flex;
-  flex-direction: column;
-  max-width: 300px;
-  margin: 20px auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.box {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding and border don't affect width */
+  text-align: center;
+  margin: 0 auto; /* Center the box horizontally */
 }
 
 label {

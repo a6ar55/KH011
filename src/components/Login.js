@@ -3,11 +3,11 @@ import React from 'react';
 
 const Login = ({ onLogin, onLogout, userLoggedIn }) => {
   return (
-    <div>
+    <div className="top-right">
       {userLoggedIn ? (
-        <button onClick={onLogout}>Logout</button>
+        <button className="logout" onClick={onLogout}>Logout</button>
       ) : (
-        <button onClick={onLogin}>Login</button>
+        <button className="login" onClick={onLogin}>Login</button>
       )}
     </div>
   );

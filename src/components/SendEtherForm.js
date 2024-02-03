@@ -11,7 +11,7 @@ const SendEtherForm = ({ onSendEther }) => {
   };
 
   return (
-    <div>
+    <div className="box">
       <h2>Send Ether</h2>
       <div>
         <label>Sender Address (optional):</label>
