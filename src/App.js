@@ -60,11 +60,17 @@ function App() {
 
   const sendEther = async () => {
     try {
+      const gasPrice = await web3.eth.getGasPrice(); // Get the current gas price
+      const gasLimit = 21000; // A typical gas limit for simple transactions
+
       await web3.eth.sendTransaction({
         from: accounts[0],
         to: recipientAddress,
         value: web3.utils.toWei(sendAmount.toString(), 'ether'),
+        gas: gasLimit,
+        gasPrice, // Use the current gas price obtained from the network
       });
+
       alert(`Successfully sent ${sendAmount} ETH to ${recipientAddress}`);
     } catch (error) {
       console.error('Error sending Ether:', error);
