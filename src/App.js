@@ -5,25 +5,46 @@ import LoanContract from './contracts/LoanContract.json';
 import Login from './components/Login';
 import CreateLoanForm from './components/CreateLoanForm';
 import SendEtherForm from './components/SendEtherForm';
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDHk6Qa1Knax3bQVYWT4YsuNtR0y-F1oBI",
+  authDomain: "p2pdapp.firebaseapp.com",
+  projectId: "p2pdapp",
+  storageBucket: "p2pdapp.appspot.com",
+  messagingSenderId: "519389986756",
+  appId: "1:519389986756:web:e1f368e35dcff7532cee91",
+  measurementId: "G-E4PXNPB11B"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 function App() {
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [accounts, setAccounts] = useState([]);
-  const [totalLoans, setTotalLoans] = useState(0);
-  const [recipientAddress, setRecipientAddress] = useState('');
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [showCreateLoanForm, setShowCreateLoanForm] = useState(false); // Added state
-  const [showSendEtherForm, setShowSendEtherForm] = useState(true); // Added state
+  const [showCreateLoanForm, setShowCreateLoanForm] = useState(false);
+  const [showSendEtherForm, setShowSendEtherForm] = useState(true);
+
   const handleToggleCreateLoanForm = () => {
     setShowCreateLoanForm(!showCreateLoanForm);
-    setShowSendEtherForm(false); // Hide SendEtherForm when showing CreateLoanForm
+    setShowSendEtherForm(false);
   };
 
   const handleToggleSendEtherForm = () => {
     setShowSendEtherForm(!showSendEtherForm);
-    setShowCreateLoanForm(false); // Hide CreateLoanForm when showing SendEtherForm
+    setShowCreateLoanForm(false);
   };
+
   useEffect(() => {
     const initWeb3 = async () => {
       try {
@@ -42,7 +63,6 @@ function App() {
         const accounts = await web3Instance.eth.getAccounts();
         setAccounts(accounts);
 
-        // Check if the user is already logged in
         const isUserLoggedIn = localStorage.getItem('userLoggedIn');
         if (isUserLoggedIn) {
           setUserLoggedIn(true);
@@ -69,12 +89,25 @@ function App() {
     try {
       // Convert values to Wei
       const amountWei = web3.utils.toWei(amount.toString(), 'ether');
-      const interestRateWei = web3.utils.toWei(interestRate.toString(), 'ether');
-      const repaymentPeriodWei = web3.utils.toWei(repaymentPeriod.toString(), 'ether');
+      const interestRateWei = web3.utils.toWei(interestRate.toString(), 'wei'); // Assuming interest rate should be in Wei
   
-      await contract.methods.createLoan(amountWei, interestRateWei, repaymentPeriodWei).send({ from: accounts[0] });
+      // Convert repayment period to seconds
+      const repaymentPeriodSeconds = repaymentPeriod * 24 * 60 * 60; // Assuming repayment period is in days
+  
+      // Estimate gas
+      const gasLimit = await contract.methods
+        .createLoan(amountWei, interestRateWei, repaymentPeriodSeconds)
+        .estimateGas();
+  
+      // Explicitly set gas price
+      const gasPriceGwei = 15; // Set your desired gas price in Gwei
+      const gasPriceWei = web3.utils.toWei(gasPriceGwei.toString(), 'gwei');
+  
+      await contract.methods
+        .createLoan(amountWei, interestRateWei, repaymentPeriodSeconds)
+        .send({ from: accounts[0], gas: gasLimit, gasPrice: gasPriceWei });
     } catch (error) {
-      console.error('Error creating loan:', error);
+      console.error('Error creating loan:', error.message, error);
     }
   };
   
@@ -87,12 +120,11 @@ function App() {
         return;
       }
 
-      const gasPriceGwei = 15; // Set your desired gas price in Gwei
-      const gasPriceWei = web3.utils.toWei(gasPriceGwei.toString(), 'gwei'); // Convert Gwei to Wei
+      const gasPriceGwei = 15;
+      const gasPriceWei = web3.utils.toWei(gasPriceGwei.toString(), 'gwei');
 
-      const gasLimit = 21000; // A typical gas limit for simple transactions
+      const gasLimit = 21000;
 
-      // Dynamically get the selected account from MetaMask
       const selectedAccount = await web3.eth.getCoinbase();
 
       const transactionObject = {
@@ -120,7 +152,7 @@ function App() {
         <>
           <button onClick={handleToggleCreateLoanForm}>Create Loan</button>
           <button onClick={handleToggleSendEtherForm}>Send Ether</button>
-          {showCreateLoanForm && <CreateLoanForm onCreateLoan={createLoan} />}
+          {showCreateLoanForm && <CreateLoanForm onCreateLoan={createLoan} web3={web3} contract={contract} />}
           {showSendEtherForm && <SendEtherForm onSendEther={sendEther} />}
         </>
       )}
