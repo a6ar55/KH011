@@ -1,4 +1,6 @@
+// CreateLoanForm.js
 import React, { useState } from 'react';
+import '../CreateLoanForm.css'; // Import the CSS file for styling
 
 const CreateLoanForm = ({ onCreateLoan, web3, contract }) => {
   const [loanAmount, setLoanAmount] = useState(0);
@@ -23,21 +25,21 @@ const CreateLoanForm = ({ onCreateLoan, web3, contract }) => {
   };
 
   return (
-    <div className="box">
+    <div className="create-loan-form">
       <h2>Create Loan</h2>
-      <div>
-        <label>Loan Amount:</label>
+      <div className="form-group">
+        <label>Loan Amount (ETH):</label>
         <input type="number" onChange={(e) => setLoanAmount(e.target.value)} />
       </div>
-      <div>
+      <div className="form-group">
         <label>Interest Rate:</label>
         <input type="number" onChange={(e) => setInterestRate(e.target.value)} />
       </div>
-      <div>
+      <div className="form-group">
         <label>Repayment Period (in days):</label>
         <input type="number" onChange={(e) => setRepaymentPeriod(e.target.value)} />
       </div>
-      <button onClick={handleCreateLoan}>Create Loan</button>
+      <button className="create-loan-button" onClick={handleCreateLoan}>Create Loan</button>
     </div>
   );
 };
