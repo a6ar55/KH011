@@ -13,6 +13,7 @@ function App() {
   const [repaymentPeriod, setRepaymentPeriod] = useState(0);
   const [recipientAddress, setRecipientAddress] = useState('');
   const [sendAmount, setSendAmount] = useState(0);
+  const [senderAddress, setSenderAddress] = useState('');
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -60,18 +61,27 @@ function App() {
 
   const sendEther = async () => {
     try {
-      const gasPrice = await web3.eth.getGasPrice(); // Get the current gas price
+      if (!senderAddress) {
+        alert('Please provide a sender address.');
+        return;
+      }
+
+      const gasPriceGwei = 15; // Set your desired gas price in Gwei
+      const gasPriceWei = web3.utils.toWei(gasPriceGwei.toString(), 'gwei'); // Convert Gwei to Wei
+
       const gasLimit = 21000; // A typical gas limit for simple transactions
 
-      await web3.eth.sendTransaction({
-        from: accounts[0],
+      const transactionObject = {
+        from: senderAddress,
         to: recipientAddress,
         value: web3.utils.toWei(sendAmount.toString(), 'ether'),
         gas: gasLimit,
-        gasPrice, // Use the current gas price obtained from the network
-      });
+        gasPrice: gasPriceWei,
+      };
 
-      alert(`Successfully sent ${sendAmount} ETH to ${recipientAddress}`);
+      await web3.eth.sendTransaction(transactionObject);
+
+      alert(`Successfully sent ${sendAmount} ETH to ${recipientAddress} from ${transactionObject.from}`);
     } catch (error) {
       console.error('Error sending Ether:', error);
     }
@@ -101,6 +111,10 @@ function App() {
       <hr />
 
       <h2>Send Ether</h2>
+      <div>
+        <label>Sender Address (optional):</label>
+        <input type="text" onChange={(e) => setSenderAddress(e.target.value)} />
+      </div>
       <div>
         <label>Recipient Address:</label>
         <input type="text" onChange={(e) => setRecipientAddress(e.target.value)} />
