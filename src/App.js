@@ -67,11 +67,18 @@ function App() {
 
   const createLoan = async (amount, interestRate, repaymentPeriod) => {
     try {
-      await contract.methods.createLoan(amount, interestRate, repaymentPeriod).send({ from: accounts[0] });
+      // Convert values to Wei
+      const amountWei = web3.utils.toWei(amount.toString(), 'ether');
+      const interestRateWei = web3.utils.toWei(interestRate.toString(), 'ether');
+      const repaymentPeriodWei = web3.utils.toWei(repaymentPeriod.toString(), 'ether');
+  
+      await contract.methods.createLoan(amountWei, interestRateWei, repaymentPeriodWei).send({ from: accounts[0] });
     } catch (error) {
       console.error('Error creating loan:', error);
     }
   };
+  
+  
 
   const sendEther = async (senderAddress, recipientAddress, amount) => {
     try {
