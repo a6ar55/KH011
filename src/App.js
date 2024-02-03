@@ -11,6 +11,8 @@ function App() {
   const [loanAmount, setLoanAmount] = useState(0);
   const [interestRate, setInterestRate] = useState(0);
   const [repaymentPeriod, setRepaymentPeriod] = useState(0);
+  const [recipientAddress, setRecipientAddress] = useState('');
+  const [sendAmount, setSendAmount] = useState(0);
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -56,6 +58,19 @@ function App() {
     }
   };
 
+  const sendEther = async () => {
+    try {
+      await web3.eth.sendTransaction({
+        from: accounts[0],
+        to: recipientAddress,
+        value: web3.utils.toWei(sendAmount.toString(), 'ether'),
+      });
+      alert(`Successfully sent ${sendAmount} ETH to ${recipientAddress}`);
+    } catch (error) {
+      console.error('Error sending Ether:', error);
+    }
+  };
+
   return (
     <div className="App">
       <h1>Decentralized Microloan App</h1>
@@ -77,6 +92,18 @@ function App() {
       {/* Display existing loans and repay option */}
       {/* ... */}
 
+      <hr />
+
+      <h2>Send Ether</h2>
+      <div>
+        <label>Recipient Address:</label>
+        <input type="text" onChange={(e) => setRecipientAddress(e.target.value)} />
+      </div>
+      <div>
+        <label>Amount to Send (ETH):</label>
+        <input type="number" onChange={(e) => setSendAmount(e.target.value)} />
+      </div>
+      <button onClick={sendEther}>Send Ether</button>
     </div>
   );
 }
