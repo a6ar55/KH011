@@ -14,6 +14,7 @@ function App() {
   const [recipientAddress, setRecipientAddress] = useState('');
   const [sendAmount, setSendAmount] = useState(0);
   const [senderAddress, setSenderAddress] = useState('');
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -35,6 +36,12 @@ function App() {
         // Load accounts
         const accounts = await web3Instance.eth.getAccounts();
         setAccounts(accounts);
+
+        // Check if the user is already logged in
+        const isUserLoggedIn = localStorage.getItem('userLoggedIn');
+        if (isUserLoggedIn) {
+          setUserLoggedIn(true);
+        }
       } catch (error) {
         console.error('Error initializing web3:', error);
       }
@@ -87,6 +94,18 @@ function App() {
     }
   };
 
+  const handleLogin = () => {
+    // For simplicity, let's consider the user as logged in when clicking "Login"
+    localStorage.setItem('userLoggedIn', 'true');
+    setUserLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    // Clear user data or perform any necessary cleanup
+    localStorage.removeItem('userLoggedIn');
+    setUserLoggedIn(false);
+  };
+
   return (
     <div className="App">
       <h1>Decentralized Microloan App</h1>
@@ -103,27 +122,32 @@ function App() {
         <label>Repayment Period (in days):</label>
         <input type="number" onChange={(e) => setRepaymentPeriod(e.target.value)} />
       </div>
-      <button onClick={createLoan}>Create Loan</button>
+
+      {userLoggedIn ? (
+        <>
+          <button onClick={createLoan}>Create Loan</button>
+          <hr />
+          <h2>Send Ether</h2>
+          <div>
+            <label>Sender Address (optional):</label>
+            <input type="text" onChange={(e) => setSenderAddress(e.target.value)} />
+          </div>
+          <div>
+            <label>Recipient Address:</label>
+            <input type="text" onChange={(e) => setRecipientAddress(e.target.value)} />
+          </div>
+          <div>
+            <label>Amount to Send (ETH):</label>
+            <input type="number" onChange={(e) => setSendAmount(e.target.value)} />
+          </div>
+          <button onClick={sendEther}>Send Ether</button>
+        </>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
 
       {/* Display existing loans and repay option */}
       {/* ... */}
-
-      <hr />
-
-      <h2>Send Ether</h2>
-      <div>
-        <label>Sender Address (optional):</label>
-        <input type="text" onChange={(e) => setSenderAddress(e.target.value)} />
-      </div>
-      <div>
-        <label>Recipient Address:</label>
-        <input type="text" onChange={(e) => setRecipientAddress(e.target.value)} />
-      </div>
-      <div>
-        <label>Amount to Send (ETH):</label>
-        <input type="number" onChange={(e) => setSendAmount(e.target.value)} />
-      </div>
-      <button onClick={sendEther}>Send Ether</button>
     </div>
   );
 }
