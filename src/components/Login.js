@@ -1,15 +1,16 @@
-// Login.js
 import React from 'react';
 
 const Login = ({ onLogin, onLogout, userLoggedIn }) => {
   return (
-    <div className="top-right">
-      {userLoggedIn ? (
-        <button className="logout" onClick={onLogout}>Logout</button>
-      ) : (
-        <button className="login" onClick={onLogin}>Login</button>
-      )}
-    </div>
+    <ul className="navbar-nav ml-auto top-right">
+      <li className="nav-item">
+        {userLoggedIn ? (
+          <button className="btn btn-outline-danger my-2 my-sm-0" onClick={onLogout}>Logout</button>
+        ) : (
+          <button className="btn btn-outline-success my-2 my-sm-0" onClick={onLogin}>Login</button>
+        )}
+      </li>
+    </ul>
   );
 };
 

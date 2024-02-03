@@ -5,27 +5,8 @@ import LoanContract from './contracts/LoanContract.json';
 import Login from './components/Login';
 import CreateLoanForm from './components/CreateLoanForm';
 import SendEtherForm from './components/SendEtherForm';
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDHk6Qa1Knax3bQVYWT4YsuNtR0y-F1oBI",
-  authDomain: "p2pdapp.firebaseapp.com",
-  projectId: "p2pdapp",
-  storageBucket: "p2pdapp.appspot.com",
-  messagingSenderId: "519389986756",
-  appId: "1:519389986756:web:e1f368e35dcff7532cee91",
-  measurementId: "G-E4PXNPB11B"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+import 'bootstrap/dist/css/bootstrap.min.css';
+import About from './components/About';
 
 function App() {
   const [web3, setWeb3] = useState(null);
@@ -34,15 +15,24 @@ function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [showCreateLoanForm, setShowCreateLoanForm] = useState(false);
   const [showSendEtherForm, setShowSendEtherForm] = useState(true);
+  const [showAbout, setShowAbout] = useState(false);
 
   const handleToggleCreateLoanForm = () => {
     setShowCreateLoanForm(!showCreateLoanForm);
     setShowSendEtherForm(false);
+    setShowAbout(false);
   };
 
   const handleToggleSendEtherForm = () => {
     setShowSendEtherForm(!showSendEtherForm);
     setShowCreateLoanForm(false);
+    setShowAbout(false);
+  };
+
+  const handleToggleAbout = () => {
+    setShowAbout(!showAbout);
+    setShowCreateLoanForm(false);
+    setShowSendEtherForm(false);
   };
 
   useEffect(() => {
@@ -143,21 +133,55 @@ function App() {
     }
   };
 
-  return (
-    <div className="App">
-      <h1>Decentralized Microloan App</h1>
-      <Login onLogin={handleLogin} onLogout={handleLogout} userLoggedIn={userLoggedIn} />
+// ... (existing code)
 
-      {userLoggedIn && (
-        <>
-          <button onClick={handleToggleCreateLoanForm}>Create Loan</button>
-          <button onClick={handleToggleSendEtherForm}>Send Ether</button>
-          {showCreateLoanForm && <CreateLoanForm onCreateLoan={createLoan} web3={web3} contract={contract} />}
-          {showSendEtherForm && <SendEtherForm onSendEther={sendEther} />}
-        </>
-      )}
-    </div>
-  );
+return (
+  <div className="App">
+
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand mx-auto" href="#">
+    <img src="/docs/4.1/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt=""></img>
+Eazy Tr4n5er
+  </a>
+</nav>
+
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <a className="navbar-brand" href="#">Eazy Tr4n5er</a>
+      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item active">
+            <a className="nav-link" href="#">Home</a>
+          </li>
+          <li className="nav-item">
+          <button className="btn btn-link nav-link" onClick={handleToggleAbout}>About</button>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="#">FAQ</a>
+          </li>
+        </ul>
+        
+        {/* Add the Login component to the right */}
+        <Login onLogin={handleLogin} onLogout={handleLogout} userLoggedIn={userLoggedIn} />
+      </div>
+    </nav>
+    {showAbout && <About />}
+    {userLoggedIn && (
+      <>
+        <button onClick={handleToggleCreateLoanForm}>Create Loan</button>
+        <button onClick={handleToggleSendEtherForm}>Send Ether</button>
+        {showCreateLoanForm && <CreateLoanForm onCreateLoan={createLoan} web3={web3} contract={contract} />}
+        {showSendEtherForm && <SendEtherForm onSendEther={sendEther} />}
+      </>
+    )}
+  </div>
+);
+
+// ... (remaining code)
+
 }
 
 export default App;
