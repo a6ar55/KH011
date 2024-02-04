@@ -7,6 +7,7 @@ import CreateLoanForm from './components/CreateLoanForm';
 import SendEtherForm from './components/SendEtherForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import About from './components/About';
+import FAQ from './components/FAQ';
 
 function App() {
   const [web3, setWeb3] = useState(null);
@@ -81,16 +82,15 @@ function App() {
       const amountWei = web3.utils.toWei(amount.toString(), 'ether');
       const interestRateWei = web3.utils.toWei(interestRate.toString(), 'wei'); // Assuming interest rate should be in Wei
   
-      // Convert repayment period to seconds
-      const repaymentPeriodSeconds = repaymentPeriod * 24 * 60 * 60; // Assuming repayment period is in days
+      // period to seconds
+      const repaymentPeriodSeconds = repaymentPeriod * 24 * 60 * 60; // for calculating in days
   
       // Estimate gas
       const gasLimit = await contract.methods
         .createLoan(amountWei, interestRateWei, repaymentPeriodSeconds)
         .estimateGas();
   
-      // Explicitly set gas price
-      const gasPriceGwei = 15; // Set your desired gas price in Gwei
+      const gasPriceGwei = 15; 
       const gasPriceWei = web3.utils.toWei(gasPriceGwei.toString(), 'gwei');
   
       await contract.methods
@@ -133,64 +133,63 @@ function App() {
     }
   };
 
-// ... (existing code)
 
-return (
-  <div className="App">
+  return (
+    <div className="App">
+      <nav className="navbar navbar-light bg-light">
+        <a className="navbar-brand mx-auto" href="#">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/EasyTransfer_Logo.png" width="300" height="70" className="d-inline-block align-top" alt="" />
+        </a>
+      </nav>
 
-    <nav className="navbar navbar-light bg-light">
-      <a className="navbar-brand mx-auto" href="#">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/EasyTransfer_Logo.png" width="300" height="70" className="d-inline-block align-top" alt="" />
-      </a>
-    </nav>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <a className="navbar-brand" href="#">
+          Eazy Tr4n5er
+        </a>
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <a className="navbar-brand" href="#">
-        Eazy Tr4n5er
-      </a>
-      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav mr-auto">
+            <li className="nav-item active">
+              <a className="nav-link" href="#">
+                Home
+              </a>
+            </li>
+            <li className="nav-item">
+              <button className="btn btn-link nav-link" onClick={handleToggleAbout}>
+                About
+              </button>
+            </li>
+            <li className="nav-item">
+            <button className="btn btn-link nav-link" onClick={handleToggleFAQ}>
+                FAQ
+              </button>
+            </li>
+          </ul>
 
-      <div className="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul className="navbar-nav mr-auto">
-          <li className="nav-item active">
-            <a className="nav-link" href="#">
-              Home
-            </a>
-          </li>
-          <li className="nav-item">
-            <button className="btn btn-link nav-link" onClick={handleToggleAbout}>
-              About
+          <Login onLogin={handleLogin} onLogout={handleLogout} userLoggedIn={userLoggedIn} />
+        </div>
+      </nav>
+
+      {showAbout && <About />}
+      {userLoggedIn && (
+        <>
+          <div className="my-3">
+            <button className="btn btn-primary mr-2" onClick={handleToggleCreateLoanForm}>
+              Create Loan
             </button>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              FAQ
-            </a>
-          </li>
-        </ul>
-
-        {/* Add the Login component to the right */}
-        <Login onLogin={handleLogin} onLogout={handleLogout} userLoggedIn={userLoggedIn} />
-      </div>
-    </nav>
-
-    {showAbout && <About />}
-    {userLoggedIn && (
-      <>
-        <button className="btn btn-primary m-2" onClick={handleToggleCreateLoanForm}>
-          Create Loan
-        </button>
-        <button className="btn btn-secondary m-2" onClick={handleToggleSendEtherForm}>
-          Send Ether
-        </button>
-        {showCreateLoanForm && <CreateLoanForm onCreateLoan={createLoan} web3={web3} contract={contract} />}
-        {showSendEtherForm && <SendEtherForm onSendEther={sendEther} />}
-      </>
-    )}
-  </div>
-);
+            <button className="btn btn-secondary" onClick={handleToggleSendEtherForm}>
+              Send Ether
+            </button>
+          </div>
+          {showCreateLoanForm && <CreateLoanForm onCreateLoan={createLoan} web3={web3} contract={contract} />}
+          {showSendEtherForm && <SendEtherForm onSendEther={sendEther} />}
+        </>
+      )}
+    </div>
+  );
 }
 
 export default App;

@@ -1,6 +1,6 @@
 // SendEtherForm.js
 import React, { useState } from 'react';
-import '../SendEtherForm.css'; // Import the CSS file for styling
+import '../SendEtherForm.css'; 
 
 const SendEtherForm = ({ onSendEther }) => {
   const [senderAddress, setSenderAddress] = useState('');
@@ -15,7 +15,7 @@ const SendEtherForm = ({ onSendEther }) => {
     <div className="send-ether-form">
       <h2>Send Ether</h2>
       <div className="form-group">
-        <label>Sender Address (optional):</label>
+        <label>Sender Address:</label>
         <input type="text" onChange={(e) => setSenderAddress(e.target.value)} />
       </div>
       <div className="form-group">

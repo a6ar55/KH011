@@ -1,24 +1,47 @@
+body {
+  font-family: 'Roboto', sans-serif; /* or any other preferred font */
+  color: #333; /* Set a color that contrasts well with your background */
+}
+
 .about-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .feature-section,
-  .how-it-works-section,
-  .security-section,
-  .get-started-section {
-    margin-top: 20px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    margin-bottom: 10px;
-  }
-  
-  /* Add any additional styling as needed */
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2, h3 {
+  color: #007bff; /* or any other accent color */
+}
+
+p {
+  line-height: 1.5;
+}
+
+/* Add any additional styling as needed */
+.feature-section,
+.how-it-works-section,
+.security-section,
+.get-started-section {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #ddd; /* Add a border to visually separate sections */
+  border-radius: 8px; /* Optional: Add rounded corners for a softer look */
+  background-color: #f9f9f9; /* Set a background color for better contrast */
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+/* Optional: Add a bullet point or icon to list items */
+li::before {
+  content: '\2022'; /* Bullet point character */
+  color: #007bff; /* or any other accent color */
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}

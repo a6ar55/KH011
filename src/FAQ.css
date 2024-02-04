@@ -1,0 +1,17 @@
+/* components/FAQ.css */
+
+.faq-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .faq-item {
+    margin-top: 20px;
+  }
+  
+  /* Add any additional styling as needed */
+  

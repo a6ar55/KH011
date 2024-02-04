@@ -1,6 +1,6 @@
 // CreateLoanForm.js
 import React, { useState } from 'react';
-import '../CreateLoanForm.css'; // Import the CSS file for styling
+import '../CreateLoanForm.css'; 
 
 const CreateLoanForm = ({ onCreateLoan, web3, contract }) => {
   const [loanAmount, setLoanAmount] = useState(0);
@@ -13,7 +13,7 @@ const CreateLoanForm = ({ onCreateLoan, web3, contract }) => {
       const interestRateWei = web3.utils.toWei(interestRate.toString(), 'ether');
       const repaymentPeriodSeconds = repaymentPeriod * 24 * 60 * 60;
 
-      // Use estimateGas to dynamically get gas limit
+
       const gasLimit = await contract.methods
         .createLoan(amountWei, interestRateWei, repaymentPeriodSeconds)
         .estimateGas();
