@@ -27,7 +27,7 @@ function App() {
         const web3Instance = new Web3(window.ethereum);
         await window.ethereum.enable();
         setWeb3(web3Instance);
-
+  
         const networkId = await web3Instance.eth.net.getId();
         const deployedNetwork = LoanContract.networks[networkId];
         const contractInstance = new web3Instance.eth.Contract(
@@ -35,21 +35,25 @@ function App() {
           deployedNetwork && deployedNetwork.address
         );
         setContract(contractInstance);
-
+  
         const accounts = await web3Instance.eth.getAccounts();
         setAccounts(accounts);
-
+  
         const isUserLoggedIn = localStorage.getItem('userLoggedIn');
         if (isUserLoggedIn) {
           setUserLoggedIn(true);
         }
+  
+        // Always show the home component on initial render
+        setShowHome(true);
       } catch (error) {
         console.error('Error initializing web3:', error);
       }
     };
-
+  
     initWeb3();
   }, []);
+  
 
   const handleLogin = () => {
     localStorage.setItem('userLoggedIn', 'true');
@@ -66,6 +70,9 @@ function App() {
     setUserLoggedIn(false);
     setShowCreateLoanForm(false);
     setShowSendEtherForm(false);
+    setShowAbout(false);
+    setShowFAQ(false);
+    setShowHome(true);
   };
 
   const handleToggleComponent = (component) => {
@@ -118,18 +125,18 @@ function App() {
       // Convert values to Wei
       const amountWei = web3.utils.toWei(amount.toString(), 'ether');
       const interestRateWei = web3.utils.toWei(interestRate.toString(), 'wei'); // Assuming interest rate should be in Wei
-  
+
       // period to seconds
       const repaymentPeriodSeconds = repaymentPeriod * 24 * 60 * 60; // for calculating in days
-  
+
       // Estimate gas
       const gasLimit = await contract.methods
         .createLoan(amountWei, interestRateWei, repaymentPeriodSeconds)
         .estimateGas();
-  
+
       const gasPriceGwei = 15; 
       const gasPriceWei = web3.utils.toWei(gasPriceGwei.toString(), 'gwei');
-  
+
       await contract.methods
         .createLoan(amountWei, interestRateWei, repaymentPeriodSeconds)
         .send({ from: accounts[0], gas: gasLimit, gasPrice: gasPriceWei });
