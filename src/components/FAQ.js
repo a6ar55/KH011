@@ -2,7 +2,7 @@
 import React from 'react';
 import '../FAQ.css';
 
-const FAQ = () => {
+const Faq = () => {
   return (
     <div className="faq-container">
       <h2>Frequently Asked Questions</h2>
@@ -26,4 +26,4 @@ const FAQ = () => {
   );
 };
 
-export default FAQ;
+export default Faq;

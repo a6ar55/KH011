@@ -7,7 +7,8 @@ import CreateLoanForm from './components/CreateLoanForm';
 import SendEtherForm from './components/SendEtherForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import About from './components/About';
-import FAQ from './components/FAQ';
+import Faq from './components/Faq';
+import Home from './components/Home';
 
 function App() {
   const [web3, setWeb3] = useState(null);
@@ -15,26 +16,10 @@ function App() {
   const [accounts, setAccounts] = useState([]);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [showCreateLoanForm, setShowCreateLoanForm] = useState(false);
-  const [showSendEtherForm, setShowSendEtherForm] = useState(true);
+  const [showSendEtherForm, setShowSendEtherForm] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
-
-  const handleToggleCreateLoanForm = () => {
-    setShowCreateLoanForm(!showCreateLoanForm);
-    setShowSendEtherForm(false);
-    setShowAbout(false);
-  };
-
-  const handleToggleSendEtherForm = () => {
-    setShowSendEtherForm(!showSendEtherForm);
-    setShowCreateLoanForm(false);
-    setShowAbout(false);
-  };
-
-  const handleToggleAbout = () => {
-    setShowAbout(!showAbout);
-    setShowCreateLoanForm(false);
-    setShowSendEtherForm(false);
-  };
+  const [showFAQ, setShowFAQ] = useState(false);
+  const [showHome, setShowHome] = useState(false);
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -69,11 +54,63 @@ function App() {
   const handleLogin = () => {
     localStorage.setItem('userLoggedIn', 'true');
     setUserLoggedIn(true);
+    setShowCreateLoanForm(false);
+    setShowSendEtherForm(false);
+    setShowAbout(false);
+    setShowFAQ(false);
+    setShowHome(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('userLoggedIn');
     setUserLoggedIn(false);
+    setShowCreateLoanForm(false);
+    setShowSendEtherForm(false);
+  };
+
+  const handleToggleComponent = (component) => {
+    setShowCreateLoanForm(false);
+    setShowSendEtherForm(false);
+    setShowAbout(false);
+    setShowFAQ(false);
+    setShowHome(false);
+
+    switch (component) {
+      case 'about':
+        setShowAbout(true);
+        break;
+      case 'faq':
+        setShowFAQ(true);
+        break;
+      case 'home':
+        setShowHome(true);
+        break;
+      case 'createLoanForm':
+        setShowCreateLoanForm(true);
+        break;
+      case 'sendEtherForm':
+        setShowSendEtherForm(true);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const renderActiveComponent = () => {
+    if (showAbout) {
+      return <About />;
+    } else if (showFAQ) {
+      return <Faq />;
+    } else if (showHome) {
+      // Add your home component here
+      return <div><Home/></div>;
+    } else if (showCreateLoanForm) {
+      return <CreateLoanForm onCreateLoan={createLoan} web3={web3} contract={contract} />;
+    } else if (showSendEtherForm) {
+      return <SendEtherForm onSendEther={sendEther} />;
+    } else {
+      return null;
+    }
   };
 
   const createLoan = async (amount, interestRate, repaymentPeriod) => {
@@ -100,8 +137,6 @@ function App() {
       console.error('Error creating loan:', error.message, error);
     }
   };
-  
-  
 
   const sendEther = async (senderAddress, recipientAddress, amount) => {
     try {
@@ -133,9 +168,9 @@ function App() {
     }
   };
 
-
   return (
     <div className="App">
+      {/* Navbar */}
       <nav className="navbar navbar-light bg-light">
         <a className="navbar-brand mx-auto" href="#">
           <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/EasyTransfer_Logo.png" width="300" height="70" className="d-inline-block align-top" alt="" />
@@ -153,17 +188,17 @@ function App() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
-              <a className="nav-link" href="#">
+              <button className="btn btn-link nav-link" onClick={() => handleToggleComponent('home')}>
                 Home
-              </a>
+              </button>
             </li>
-            <li className="nav-item">
-              <button className="btn btn-link nav-link" onClick={handleToggleAbout}>
+            <li className="nav-item active">
+              <button className="btn btn-link nav-link" onClick={() => handleToggleComponent('about')}>
                 About
               </button>
             </li>
             <li className="nav-item">
-            <button className="btn btn-link nav-link" onClick={handleToggleFAQ}>
+              <button className="btn btn-link nav-link" onClick={() => handleToggleComponent('faq')}>
                 FAQ
               </button>
             </li>
@@ -173,21 +208,19 @@ function App() {
         </div>
       </nav>
 
-      {showAbout && <About />}
+      {/* Render active component based on state */}
       {userLoggedIn && (
-        <>
-          <div className="my-3">
-            <button className="btn btn-primary mr-2" onClick={handleToggleCreateLoanForm}>
-              Create Loan
-            </button>
-            <button className="btn btn-secondary" onClick={handleToggleSendEtherForm}>
-              Send Ether
-            </button>
-          </div>
-          {showCreateLoanForm && <CreateLoanForm onCreateLoan={createLoan} web3={web3} contract={contract} />}
-          {showSendEtherForm && <SendEtherForm onSendEther={sendEther} />}
-        </>
+        <div className="my-3">
+          <button className="btn btn-primary mr-2" onClick={() => handleToggleComponent('createLoanForm')}>
+            Create Loan
+          </button>
+          <button className="btn btn-secondary" onClick={() => handleToggleComponent('sendEtherForm')}>
+            Send Ether
+          </button>
+        </div>
       )}
+
+      {renderActiveComponent()}
     </div>
   );
 }

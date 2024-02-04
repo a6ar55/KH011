@@ -1,0 +1,23 @@
+/* Home.css */
+.home-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .features-section,
+  .how-it-works-section,
+  .security-section,
+  .get-started-section {
+    margin-top: 20px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
